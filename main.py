@@ -56,7 +56,7 @@ print("\nDisplay dataframe with data")
 print(df)
 
 # function for finding trend line up
-# if the middle is higher than the first two and the last two then it is a fractal
+# if the middle is higher than the first two bars and the last two bars, then it is a fractal
 
 
 def uptrend(df1, n2, n1):
@@ -73,7 +73,8 @@ def uptrend(df1, n2, n1):
     return False
 
 
-# look for another fractal that is lower than the previous fractal
+# look for another fractal that is lower than the previous fractal that was found
+# if the fractal has the same time as the first fractal break out the loop
 
 
 def uptrend2(df2, n3, n4):
@@ -93,14 +94,26 @@ def uptrend2(df2, n3, n4):
         return True
     return False
 
+# two list for the fractals we found
+
 
 frac1 = []
 frac2 = []
+# count three bars before the find the first fractal and leave space for 7 bars to the end
+
+
 n1 = 3
 n2 = 7
+
+# looking through 1000 bars
 e = 1000
 
 # loop to add the fractals to the frac1 list
+# for the row in the range of 3-7
+# if row is less that 1000-7
+# add the row number, the high price of the bar, and the time of the bar
+
+
 for row in range(n1, e+n1):
     if uptrend(df, row, e):
         if row < e-n2:
@@ -111,6 +124,10 @@ for row in range(n1, e+n1):
     if uptrend2(df, row, e):
         if row < e-n2:
             frac2.append((row, df.high[row], df.time[row]))
+
+# print the length of the list and all the elements
+
+
 print("The fractals for 1 are ", len(frac1))
 print(frac1)
 print("The fractals for 2 are ", len(frac2))
