@@ -99,6 +99,7 @@ def uptrend2(df2, n3, n4):
 
 frac1 = []
 frac2 = []
+
 # count three bars before the find the first fractal and leave space for 7 bars to the end
 
 
@@ -124,21 +125,38 @@ for row in range(n1, e+n1):
     if uptrend2(df, row, e):
         if row < e-n2:
             frac2.append((row, df.high[row], df.time[row]))
-
-
+print("The fractals for 2 are the first time are", len(frac2))
+print(frac2)
 # a for loop to see if any high from a candle breaks the trend line
 # if it does then remove that fractal from the list and calculate the next one
 
 # for loop from the first frac to the second frac
 
-for bar in range(frac1[0][0], frac2[0][0]):
-    # The slope of the first frac to the second frac
-    slope1 = (frac1[0][1] - frac2[0][1]) / (abs(frac1[0][0] - frac2[0][0]))
-    # The slope of bar high to the second frac
-    slope2 = (df.high[bar+1] - frac2[0][1]) / (abs(bar - frac2[0][0]))
-    # inner for loop for calculating each bar to the second frac
-    # if the slope of slope2 is larger than slope one then break out the loop
-    # and delete the item from the list
+
+def slope_function():
+    for bar in range(frac1[0][0], frac2[0][0]):
+
+        # The slope of the first frac[high - sec frac[high] /
+        # absolute of first frac[bar] - sec frac[bar]
+        slope1 = (frac1[0][1] - frac2[0][1]) / (abs(frac1[0][0] - frac2[0][0]))
+        # The slope of bar high to the second frac
+        slope2 = (df.high[bar+1] - frac2[0][1]) / (abs(bar - frac2[0][0]))
+        # inner for loop for calculating each bar to the second frac
+        # if the slope of slope2 is larger than slope one then break out the loop
+        # and delete the item from the list
+        if slope2 > slope1:
+            return False
+    return True
+
+# setting up a new frac
+
+
+newFrac = []
+
+
+if slope_function():
+    newFrac = frac2
+
 # print the length of the list and all the elements
 
 
