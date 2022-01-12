@@ -11,7 +11,6 @@ else:
     print("Initialization unsuccessful")
     mt5.shutdown()
 
-
 login = 6048029
 password = 'yxzgltu0'
 server = 'OANDA-OGM MT5 Demo'
@@ -55,19 +54,20 @@ df['time'] = pd.to_datetime(df['time'], unit='s')
 print("\nDisplay dataframe with data")
 print(df)
 
+
 # function for finding trend line up
 # if the middle is higher than the first two bars and the last two bars, then it is a fractal
 
 
 def uptrend(df1, n2, n1):
-    for i in range(n2, n1-3):
-        if df1.high[i] < df1.high[i+1]:
+    for i in range(n2, n1 - 3):
+        if df1.high[i] < df1.high[i + 1]:
             break
-        if df1.high[i] < df1.high[i+2]:
+        if df1.high[i] < df1.high[i + 2]:
             break
-        if df1.high[i] < df1.high[i-1]:
+        if df1.high[i] < df1.high[i - 1]:
             break
-        if df1.high[i] < df1.high[i-2]:
+        if df1.high[i] < df1.high[i - 2]:
             break
         return True
     return False
@@ -94,6 +94,7 @@ def uptrend2(df2, n3, n4):
         return True
     return False
 
+
 # two list for the fractals we found
 
 
@@ -115,15 +116,15 @@ e = 1000
 # add the row number, the high price of the bar, and the time of the bar
 
 
-for row in range(n1, e+n1):
+for row in range(n1, e + n1):
     if uptrend(df, row, e):
-        if row < e-n2:
+        if row < e - n2:
             frac1.append((row, df.high[row], df.time[row]))
 
 # for loop to add elements to the second list that are lower than the first fractal
-for row in range(n1, e+n1):
+for row in range(n1, e + n1):
     if uptrend2(df, row, e):
-        if row < e-n2:
+        if row < e - n2:
             frac2.append((row, df.high[row], df.time[row]))
 print("The fractals for 2 are the first time are", len(frac2))
 print(frac2)
@@ -132,35 +133,31 @@ print(frac2)
 
 # for loop from the first frac to the second frac
 
+newFrac = []
 
-def slope_function():
-    for bar in range(frac1[0][0], frac2[0][0]):
+c = 0
+while c < len(frac2):
+    for bar in frac1[0], frac2[c]:
 
         # The slope of the first frac[high - sec frac[high] /
         # absolute of first frac[bar] - sec frac[bar]
-        slope1 = (frac1[0][1] - frac2[0][1]) / (abs(frac1[0][0] - frac2[0][0]))
+        slope1 = (frac1[0][1] - frac2[c][1]) / (frac1[c] - frac2[0])
         # The slope of bar high to the second frac
-        slope2 = (df.high[bar+1] - frac2[0][1]) / (abs(bar - frac2[0][0]))
+        slope2 = (df.high[bar] - frac2[c][1]) / (abs(bar - frac2[c]))
         # inner for loop for calculating each bar to the second frac
         # if the slope of slope2 is larger than slope one then break out the loop
         # and delete the item from the list
-        if slope2 > slope1:
-            return False
-    return True
+        #
+        # if slope2 < slope1:
+        # c += 1
+
 
 # setting up a new frac
-
-
-newFrac = []
-
-
-if slope_function():
-    newFrac = frac2
 
 # print the length of the list and all the elements
 
 
 print("The fractals for 1 are ", len(frac1))
-print(frac1)
+print(frac1[0][0][0])
 print("The fractals for 2 are ", len(frac2))
 print(frac2)
