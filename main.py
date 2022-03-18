@@ -1,3 +1,4 @@
+
 import pandas as pd
 import MetaTrader5 as mt5
 import matplotlib.pyplot as plt
@@ -41,9 +42,9 @@ else:
 rates = mt5.copy_rates_from_pos("EURUSD", mt5.TIMEFRAME_H1, 0, 1000)
 
 # display each element of obtained data in a new line
-print("Display obtained data 'as is'")
-for rate in rates:
-    print(rate)
+#print("Display obtained data 'as is'")
+#for rate in rates:
+   # print(rate)
 
 # create DataFrame out of the obtained data
 df = pd.DataFrame(rates)
@@ -57,7 +58,7 @@ print(df)
 
 # function for finding trend line up
 # if the middle is higher than the first two bars and the last two bars, then it is a fractal
-
+# else break
 
 def uptrend(df1, n2, n1):
     for i in range(n2, n1 - 3):
@@ -133,23 +134,38 @@ print(frac2)
 
 # for loop from the first frac to the second frac
 
-newFrac = []
-
+downSlope = []
+a = 0
+b = 0
 c = 0
 while c < len(frac2):
-    for bar in frac1[0], frac2[c]:
+    for bar in range(frac1[0][a], frac2[c][0]):
 
-        # The slope of the first frac[high - sec frac[high] /
-        # absolute of first frac[bar] - sec frac[bar]
-        slope1 = (frac1[0][1] - frac2[c][1]) / (frac1[c] - frac2[0])
+        # df1 = pd.DataFrame(bar)
+        # The slope of the first frac[high] - frac2[high] / frac[bar] - frac2[bar]- sec frac[bar]
+        barCount = frac2[c][0]
+        price1 = frac1[0][1] - frac2[c][1]
+        bar1 = frac1[0][0] - frac2[c][0]
+        totalSlope1 = price1 / bar1
+        price2 = df.high[bar] - frac2[c][1]
+        bar2 = bar - frac2[c][0]
+        totalSlope2 = price2 / bar2
+        if len(frac2) == 1 and totalSlope2 < totalSlope1:
+            a += 1
+            break
+        if totalSlope2 < totalSlope1:
+            c += 1
+            break
         # The slope of bar high to the second frac
-        slope2 = (df.high[bar] - frac2[c][1]) / (abs(bar - frac2[c]))
+        # slope2 = df.high[bar] - frac2[c][1] // abs(bar - frac2[c][0])
         # inner for loop for calculating each bar to the second frac
         # if the slope of slope2 is larger than slope one then break out the loop
         # and delete the item from the list
-        #
-        # if slope2 < slope1:
-        # c += 1
+
+        if bar == barCount+1 and totalSlope2 >= totalSlope1:
+            downSlope.append(frac2[c])
+
+    c += 1
 
 
 # setting up a new frac
@@ -158,6 +174,6 @@ while c < len(frac2):
 
 
 print("The fractals for 1 are ", len(frac1))
-print(frac1[0][0][0])
+print(frac1)
 print("The fractals for 2 are ", len(frac2))
 print(frac2)
